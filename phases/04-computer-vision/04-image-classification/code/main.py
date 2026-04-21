@@ -198,10 +198,11 @@ def main():
     scheduler = CosineAnnealingLR(optimizer, T_max=5)
 
     for epoch in range(5):
+        current_lr = scheduler.get_last_lr()[0]
         tr_loss, tr_acc = train_one_epoch(model, train_loader, optimizer, device, 10, use_mixup=True)
         va_loss, va_acc, cm = evaluate(model, val_loader, device, 10)
         scheduler.step()
-        print(f"epoch {epoch}  lr {scheduler.get_last_lr()[0]:.4f}  "
+        print(f"epoch {epoch}  lr {current_lr:.4f}  "
               f"train {tr_loss:.3f}/{tr_acc:.3f}  val {va_loss:.3f}/{va_acc:.3f}")
 
     prec, rec, f1 = per_class_report(cm)

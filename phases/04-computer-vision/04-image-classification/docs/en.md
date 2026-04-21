@@ -255,6 +255,9 @@ def train_one_epoch(model, loader, optimizer, device, num_classes, use_mixup=Tru
         optimizer.step()
         loss_sum += loss.item() * x.size(0)
         total += x.size(0)
+        # Training accuracy vs the un-mixed labels `y` is only an approximation
+        # when mixup is on (the model saw soft targets, not y). Treat it as a
+        # rough progress signal; rely on val accuracy for real performance.
         with torch.no_grad():
             pred = logits.argmax(dim=-1)
             correct += (pred == y).sum().item()
@@ -297,7 +300,9 @@ from main import synthetic_cifar, ArrayDataset
 from main import standardize, random_hflip, random_crop, compose
 from main import mixup_batch, soft_cross_entropy
 from main import train_one_epoch, evaluate
-from ..__previous_lesson__ import TinyResNet
+# TinyResNet comes from the previous lesson (03-cnns-lenet-to-resnet).
+# Adjust the import path to wherever you stored the previous lesson's code.
+from cnns_lenet_to_resnet import TinyResNet  # example placeholder
 
 X, Y = synthetic_cifar(num_per_class=500)
 split = int(0.9 * len(X))
