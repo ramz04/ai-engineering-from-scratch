@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/>
+    </marker>
+    <style>
+      .box { fill: #faf6ef; stroke: #1a1a1a; stroke-width: 1.5; }
+      .prompt { fill: #fff1d6; stroke: #b8860b; stroke-width: 1.5; }
+      .alice { fill: #e6f0fb; stroke: #1d4f91; stroke-width: 1.5; }
+      .bob { fill: #e6f4ea; stroke: #2e7d32; stroke-width: 1.5; }
+      .carol { fill: #f0e6ff; stroke: #5e3fbe; stroke-width: 1.5; }
+      .label { font-size: 13px; font-weight: 600; fill: #1a1a1a; }
+      .tok { font-size: 11px; font-family: 'Menlo', monospace; fill: #222; }
+      .small { font-size: 10px; font-family: 'Menlo', monospace; fill: #555; }
+      .caption { font-size: 11px; fill: #555; font-style: italic; }
+      .title { font-size: 16px; font-weight: 700; fill: #1a1a1a; }
+      .sec { font-size: 12px; font-weight: 700; fill: #1a1a1a; }
+    </style>
+  </defs>
+
+  <text x="480" y="28" text-anchor="middle" class="title">shared KV cache, three workers, one conversation</text>
+
+  <!-- Workers column -->
+  <g>
+    <text x="60" y="70" class="sec">workers</text>
+
+    <rect x="30"  y="80" width="120" height="50" class="alice"/>
+    <text x="90" y="102" text-anchor="middle" class="label">Alice (LLM)</text>
+    <text x="90" y="119" text-anchor="middle" class="small">writes region A</text>
+
+    <rect x="30" y="160" width="120" height="50" class="bob"/>
+    <text x="90" y="182" text-anchor="middle" class="label">Bob (LLM)</text>
+    <text x="90" y="199" text-anchor="middle" class="small">writes region B</text>
+
+    <rect x="30" y="240" width="120" height="50" class="carol"/>
+    <text x="90" y="262" text-anchor="middle" class="label">Carol (LLM)</text>
+    <text x="90" y="279" text-anchor="middle" class="small">writes region C</text>
+  </g>
+
+  <!-- Arrows into cache -->
+  <g>
+    <line x1="150" y1="105" x2="260" y2="140" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
+    <line x1="150" y1="185" x2="260" y2="220" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
+    <line x1="150" y1="265" x2="260" y2="300" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#arrow)"/>
+    <text x="200" y="95" class="caption">append own tokens</text>
+  </g>
+
+  <!-- Shared cache -->
+  <g>
+    <text x="470" y="70" class="sec">shared KV cache  (all workers read, each owns one region)</text>
+
+    <!-- Prompt block -->
+    <rect x="260" y="80" width="460" height="46" class="prompt"/>
+    <text x="270" y="100" class="label">prompt (read by all)</text>
+    <text x="270" y="118" class="tok">solve  three  problems  in  parallel  :  arithmetic  spell  geography</text>
+
+    <!-- Alice region -->
+    <rect x="260" y="140" width="460" height="46" class="alice"/>
+    <text x="270" y="160" class="label">region A  (owner: Alice)</text>
+    <text x="270" y="178" class="tok">[A]  17  times  23  equals  391  .</text>
+
+    <!-- Bob region -->
+    <rect x="260" y="200" width="460" height="46" class="bob"/>
+    <text x="270" y="220" class="label">region B  (owner: Bob)</text>
+    <text x="270" y="238" class="tok">[B]  asynchronous  reversed  is  suonorhcnysa  .</text>
+
+    <!-- Carol region -->
+    <rect x="260" y="260" width="460" height="46" class="carol"/>
+    <text x="270" y="280" class="label">region C  (owner: Carol)</text>
+    <text x="270" y="298" class="tok">[C]  mongolia  ->  ulaanbaatar  .</text>
+  </g>
+
+  <!-- Read-back arrows -->
+  <g>
+    <path d="M720 105 Q 830 105 830 195 Q 830 285 720 285" fill="none" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="835" y="195" class="caption">every worker</text>
+    <text x="835" y="210" class="caption">reads the full</text>
+    <text x="835" y="225" class="caption">cache each step</text>
+  </g>
+
+  <!-- Timeline -->
+  <g transform="translate(0, 340)">
+    <text x="60" y="0" class="sec">one round on real hardware (writes race, no lock on reads)</text>
+
+    <rect x="30" y="15" width="900" height="60" class="box"/>
+
+    <!-- Time axis -->
+    <line x1="50" y1="50" x2="910" y2="50" stroke="#1a1a1a" stroke-width="1"/>
+    <text x="50" y="70" class="small">t0</text>
+    <text x="900" y="70" class="small">t0 + 1 step</text>
+
+    <!-- Alice commit -->
+    <circle cx="170" cy="50" r="6" class="alice"/>
+    <text x="170" y="38" text-anchor="middle" class="small">Alice: "17"</text>
+
+    <!-- Bob commit -->
+    <circle cx="390" cy="50" r="6" class="bob"/>
+    <text x="390" y="38" text-anchor="middle" class="small">Bob: "asynchronous"</text>
+
+    <!-- Carol commit -->
+    <circle cx="640" cy="50" r="6" class="carol"/>
+    <text x="640" y="38" text-anchor="middle" class="small">Carol: "mongolia"</text>
+
+    <!-- barrier -->
+    <line x1="880" y1="20" x2="880" y2="70" stroke="#b8860b" stroke-width="1.5" stroke-dasharray="3 2"/>
+    <text x="885" y="35" class="caption">round ends:</text>
+    <text x="885" y="48" class="caption">snapshot visible</text>
+    <text x="885" y="61" class="caption">to all workers</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(30, 440)">
+    <text x="0" y="0" class="sec">key mechanics</text>
+    <text x="0" y="20" class="caption">- attention reads everything: prompt + every region, including tokens other workers just wrote</text>
+    <text x="0" y="36" class="caption">- RoPE rotational invariance lets cache positions be relocated without recomputing K, V</text>
+    <text x="0" y="52" class="caption">- self-check prompt ("am I doing redundant work?") triggers reroute when another worker has already answered</text>
+    <text x="0" y="68" class="caption">- no fine-tuning required: modern reasoning models handle the shared-cache protocol from the prompt alone</text>
+  </g>
+</svg>
