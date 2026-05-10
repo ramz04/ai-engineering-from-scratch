@@ -1,5 +1,5 @@
-import time
 import sys
+import time
 
 
 def check_gpu():
@@ -21,12 +21,12 @@ def check_gpu():
     print(f"CUDA version: {torch.version.cuda}")
     print(f"GPU: {torch.cuda.get_device_name(0)}")
 
-    props = torch.cuda.get_device_properties(0)
-    print(f"Memory: {props.total_mem / 1e9:.1f} GB")
-    print(f"Compute capability: {props.major}.{props.minor}")
+    # props = torch.cuda.get_device_properties(0)
+    # print(f"Memory: {props.total_mem / 1e9:.1f} GB")
+    # print(f"Compute capability: {props.major}.{props.minor}")
 
     print("\n=== CPU vs GPU Benchmark ===\n")
-    size = 4000
+    size = 5000
 
     a = torch.randn(size, size)
     b = torch.randn(size, size)
@@ -47,10 +47,10 @@ def check_gpu():
     print(f"GPU matrix multiply ({size}x{size}): {gpu_time:.3f}s")
     print(f"Speedup: {cpu_time / gpu_time:.0f}x")
 
-    vram_gb = props.total_mem / 1e9
-    params_fp16 = vram_gb * 1e9 / 2
-    params_billions = params_fp16 / 1e9
-    print(f"\nEstimated max model size (fp16): ~{params_billions:.0f}B parameters")
+    # vram_gb = props.total_mem / 1e9
+    # params_fp16 = vram_gb * 1e9 / 2
+    # params_billions = params_fp16 / 1e9
+    # print(f"\nEstimated max model size (fp16): ~{params_billions:.0f}B parameters")
 
 
 if __name__ == "__main__":
