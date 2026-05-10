@@ -3,7 +3,7 @@ import shutil
 import subprocess
 
 CHECKS = [
-    ("Python 3.10+", lambda: sys.version_info >= (3, 10), f"Python {sys.version}"),
+    ("Python 3.10+", lambda: sys.version_info >= (3, 14), f"Python {sys.version}"),
     ("NumPy", lambda: __import__("numpy"), None),
     ("Matplotlib", lambda: __import__("matplotlib"), None),
     ("Jupyter", lambda: __import__("jupyter"), None),
